@@ -48,7 +48,7 @@ public class RegistrationService {
         this.ticketTypeRepository = ticketTypeRepository;
     }
 
-    @ServiceActivator(inputChannel = "registrationRequest")
+    //@ServiceActivator(inputChannel = "registrationRequest")
     public void register(AttendeeRegistration registration) {
         LOG.debug("Registration received for: {}", registration.getEmail());
 

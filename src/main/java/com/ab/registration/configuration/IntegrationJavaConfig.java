@@ -9,11 +9,11 @@ import org.springframework.messaging.MessageChannel;
  * @author Arpit Bhardwaj
  */
 
-@Configuration
+//@Configuration
 public class IntegrationJavaConfig {
 
-    @Bean
+    /*@Bean
     public MessageChannel registrationRequest(){
         return new DirectChannel();
-    }
+    }*/
 }
