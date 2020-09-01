@@ -1,9 +1,12 @@
 package com.ab.registration.controller;
 
 import com.ab.registration.model.AttendeeRegistration;
-import com.ab.registration.service.RegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +21,17 @@ import javax.validation.Valid;
 public class RegistrationController {
     private static final Logger LOG = LoggerFactory.getLogger(RegistrationController.class);
 
-    private final RegistrationService registrationService;
+    //private final RegistrationService registrationService;
 
-    public RegistrationController(RegistrationService registrationService) {
-        this.registrationService = registrationService;
+    private final MessageChannel registrationRequestChannel;
+
+    public RegistrationController(@Qualifier("registrationRequest") MessageChannel registrationRequestChannel) {
+        this.registrationRequestChannel = registrationRequestChannel;
     }
+
+    /*public RegistrationController(RegistrationService registrationService) {
+        this.registrationService = registrationService;
+    }*/
 
     @GetMapping
     public String index(@ModelAttribute("registration") AttendeeRegistration registration) {
@@ -36,7 +45,12 @@ public class RegistrationController {
             return "index";
         }
 
-        registrationService.register(registration);
+        //registrationService.register(registration);
+
+        Message<AttendeeRegistration> message = MessageBuilder.withPayload(registration).build();
+
+        registrationRequestChannel.send(message);
+        LOG.debug("Message sent to registration request channel");
 
         return "success";
     }
